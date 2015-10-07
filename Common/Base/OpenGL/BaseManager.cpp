@@ -6,8 +6,9 @@
 #include "Precompiled.h"
 #include "BaseManager.h"
 #include "MyGUI_Diagnostic.h"
-
-#include <SDL_image.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+#undef STB_IMAGE_IMPLEMENTATION
 
 #ifdef MYGUI_CHECK_MEMORY_LEAKS
 #	undef new
@@ -30,14 +31,11 @@ namespace base
 	{
 		// initialize SDL
 		MYGUI_ASSERT(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_EVENTS) == 0, "Failed initializing SDL.");
-		// initialize SDL_image
-		MYGUI_ASSERT(IMG_Init(~0) != 0, "Failed to initializing SDL_image");
 	}
 
 	BaseManager::~BaseManager()
 	{
 		SDL_GL_DeleteContext(mContext);
-		IMG_Quit();
 		SDL_Quit();
 	}
 
@@ -391,27 +389,42 @@ namespace base
 	void* BaseManager::loadImage(int& _width, int& _height, MyGUI::PixelFormat& _format, const std::string& _filename)
 	{
 		std::string fullname = MyGUI::OpenGLDataManager::getInstance().getDataPath(_filename);
-		void* result = nullptr;
-		SDL_Surface *image = nullptr;
-		SDL_Surface *cvtImage = nullptr;		// converted surface with RGBA/RGB pixel format
-		image = IMG_Load(fullname.c_str());
-		if (image != nullptr) {
-			_width = image->w;
-			_height = image->h;
-
-			int bpp = image->format->BytesPerPixel;
-			if (bpp < 3) 
+		int comp;
+		stbi_uc* result = stbi_load(fullname.c_str(), &_width, &_height, &comp, 0);
+		if (result != nullptr) {
+			switch (comp) {
+			case 1:
+				_format = MyGUI::PixelFormat::L8;
+				break;
+			case 2:
+				_format = MyGUI::PixelFormat::L8A8;
+				break;
+			case 3:
 			{
-				result = convertPixelData(image, _format);
+				stbi_uc* ptr = result;
+				stbi_uc* ptr_end = ptr + 3 * _width * _height;
+				while (ptr < ptr_end) {
+					std::swap(ptr[0], ptr[2]);
+					ptr += 3;
+				}
+				_format = MyGUI::PixelFormat::R8G8B8;
+				break;
 			}
-			else 
+			case 4:
 			{
-				Uint32 pixelFmt = bpp == 3 ? SDL_PIXELFORMAT_BGR24 : SDL_PIXELFORMAT_ARGB8888;
-				cvtImage = SDL_ConvertSurfaceFormat(image, pixelFmt, 0);
-				result = convertPixelData(cvtImage, _format);
-				SDL_FreeSurface(cvtImage);
+				stbi_uc* ptr = result;
+				stbi_uc* ptr_end = ptr + 4 * _width * _height;
+				while (ptr < ptr_end) {
+					std::swap(ptr[0], ptr[2]);
+					ptr += 4;
+				}
+				_format = MyGUI::PixelFormat::R8G8B8A8;
+				break;
 			}
-			SDL_FreeSurface(image);
+			default:
+				_format = MyGUI::PixelFormat::Unknow;
+				break;
+			}
 		}
 		MYGUI_ASSERT(result != nullptr, "Failed to load image.");
 		return result;

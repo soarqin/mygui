@@ -322,7 +322,7 @@ add_subdirectory(CMake)
 # Provide CPack packaging target
 include(Packaging)
 
-# copy dlls required by SDL2 and SDL2_image
+# copy dlls required by SDL2
 if(WIN32)
     if(MYGUI_RENDERSYSTEM EQUAL 4)
     

@@ -80,11 +80,9 @@ elseif(MYGUI_RENDERSYSTEM EQUAL 4)
 		${MYGUI_SOURCE_DIR}/Platforms/OpenGL/OpenGLPlatform/include
 		${OPENGL_INCLUDE_DIR}
 		${SDL2_INCLUDE_DIRS}
-		${SDL2_IMAGE_INCLUDE_DIRS}
 	)
 	link_directories(${OPENGL_LIB_DIR})
 	link_directories(${SDL2_LIB_DIR})
-	link_directories(${SDL2_IMAGE_LIB_DIR})
 elseif(MYGUI_RENDERSYSTEM EQUAL 5)
 	mygui_add_base_manager_source(DirectX)
 	add_definitions("-DMYGUI_DIRECTX_PLATFORM")
@@ -121,7 +119,6 @@ elseif(MYGUI_SAMPLES_INPUT EQUAL 3)
 	mygui_add_input_source(Win32_OIS)
 elseif(MYGUI_SAMPLES_INPUT EQUAL 4)
 	include_directories(${SDL2_INCLUDE_DIRS})
-	include_directories(${SDL2_IMAGE_INCLUDE_DIRS})
 	mygui_add_input_source(SDL)
 endif()
 
@@ -162,9 +159,7 @@ elseif(MYGUI_SAMPLES_INPUT EQUAL 3)
 elseif(MYGUI_SAMPLES_INPUT EQUAL 4)
 	add_definitions("-DMYGUI_SAMPLES_INPUT_SDL2")
 	link_directories(${SDL2_LIB_DIR})
-	link_directories(${SDL2_IMAGE_LIB_DIR})
 	target_link_libraries(${PROJECTNAME} ${SDL2_LIBRARIES})
-	target_link_libraries(${PROJECTNAME} ${SDL2_IMAGE_LIBRARIES})
 endif()
 
 if(NOT WIN32)

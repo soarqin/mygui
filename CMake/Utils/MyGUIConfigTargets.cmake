@@ -131,12 +131,10 @@ function(mygui_app PROJECTNAME SOLUTIONFOLDER)
 			${MYGUI_SOURCE_DIR}/Platforms/OpenGL/OpenGLPlatform/include
 			${OPENGL_INCLUDE_DIR}
 			${SDL2_INCLUDE_DIRS}
-			${SDL2_IMAGE_INCLUDE_DIRS}
 		)
 		link_directories(
 			${OPENGL_LIB_DIR}
 			${SDL2_LIB_DIR}
-			${SDL2_IMAGE_LIB_DIR}
 		)
 		
 	elseif(MYGUI_RENDERSYSTEM EQUAL 5)
@@ -180,7 +178,6 @@ function(mygui_app PROJECTNAME SOLUTIONFOLDER)
 		add_definitions("-DMYGUI_SAMPLES_INPUT_SDL2")
 		include_directories(../../Common/Input/SDL)
 		include_directories(${SDL2_INCLUDE_DIRS})
-		include_directories(${SDL2_IMAGE_INCLUDE_DIRS})
 	endif()
 	
 	# setup demo target
@@ -216,7 +213,6 @@ function(mygui_app PROJECTNAME SOLUTIONFOLDER)
 		target_link_libraries(${PROJECTNAME} MyGUI.OpenGLPlatform)
 		
 		target_link_libraries(${PROJECTNAME} ${SDL2_LIBRARIES})
-		target_link_libraries(${PROJECTNAME} ${SDL2_IMAGE_LIBRARIES} )
 
 		elseif(MYGUI_RENDERSYSTEM EQUAL 7)
 		add_dependencies(${PROJECTNAME} MyGUI.OpenGL3Platform)
@@ -275,12 +271,10 @@ function(mygui_dll PROJECTNAME SOLUTIONFOLDER)
 			${MYGUI_SOURCE_DIR}/Platforms/OpenGL/OpenGLPlatform/include
 			${OPENGL_INCLUDE_DIR}
 			${SDL2_INCLUDE_DIRS}
-			${SDL2_IMAGE_INCLUDE_DIRS}
 		)
 		link_directories(
 			${OPENGL_LIB_DIR}
 			${SDL2_LIB_DIR}
-			${SDL2_IMAGE_LIB_DIR}
 		)
 	elseif(MYGUI_RENDERSYSTEM EQUAL 5)
 		include_directories(../../Common/Base/DirectX)
@@ -338,7 +332,6 @@ function(mygui_dll PROJECTNAME SOLUTIONFOLDER)
 		target_link_libraries(${PROJECTNAME} MyGUI.OpenGLPlatform)
 		
 		target_link_libraries(${PROJECTNAME} ${SDL2_LIBRARIES})
-		target_link_libraries(${PROJECTNAME} ${SDL2_IMAGE_LIBRARIES})
 
 		elseif(MYGUI_RENDERSYSTEM EQUAL 7)
 		add_dependencies(${PROJECTNAME} MyGUI.OpenGL3Platform)
